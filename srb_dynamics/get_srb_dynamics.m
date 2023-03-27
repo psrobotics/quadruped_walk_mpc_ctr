@@ -1,44 +1,7 @@
-%% SRB dynamic model of quadruped in 3d space
+%% get SRB dynamic model of quadruped in 3d space
 % Shuang Peng 02/2023 
 
-clc; 
-clear;
-close all;
-warning off;
-
-% Change to your casadi path - https://web.casadi.org/
-addpath('D:\matlab_lib\casadi-windows-matlabR2016a-v3.5.5');
-import casadi.*;
-                 
-%% SRB dynamic model
-world.fk = 0.5; %friction coefficient
-world.g = 9.81;
-
-body.m = 5*2; % Body Mass
-
-init_z = 0.3;
-
-i_vec = [0.059150 0.101150 0.046240]*2; 
-body.i_mat = [i_vec(1) 0 0;... % roll
-           0 i_vec(2) 0;... % pitch
-           0 0 i_vec(3)]; % yaw
-body.length = 0.34;
-body.width = 0.26;
-
-% foot motion range, in m
-body.foot_x_range = 0.15;
-body.foot_y_range = 0.15;
-body.foot_z_range = 0.3;
-
-body.max_zforce = 1000;
-
-hip_vec = [body.length/2; body.width/2; 0];
-hip_dir_mat = [1 1 -1 -1; 1 -1 1 -1; 0 0 0 0];
-body.hip_pos = hip_dir_mat .* repmat(hip_vec,1,4);
-body.foot_pos = repmat([0; 0; -0.6*init_z],1,4); % init foot pos
-
-body.phip_swing_ref = body.hip_pos + body.foot_pos;
-body.phip_swing_ref_vec = reshape(body.phip_swing_ref,[],1); % ref foot pos at swing phase
+function [dyn_f] = get_srb_dynamics(body)
 
 % build the dynamic equation
 state_dim = 12; % number of dim of state, rpy xyz dot_rpy dot_xyz
@@ -103,9 +66,4 @@ d_x = A*x_k + B*f_k + G;
 % map the dynamic function
 dyn_f = Function('dyn_f',{x_k;f_k;fp_k},{d_x},{'state','leg_force','foot_pos'},{'d_state'});
 
-body.foot_pos
-
-% simple test
-x_init = [0;0.0;0; 0.0;0.0;0.5 ;0;0;0; 0;0;0];
-% output is dot_state
-dyn_f(x_init,zeros(12,1),zeros(12,1))
+end

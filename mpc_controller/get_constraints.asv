@@ -1,0 +1,9 @@
+%% Get all constraints in a mpc cycle
+
+function [outputArg1,outputArg2] = get_constraints(path, world_p, body_p, ctr_p)
+
+addpath(path.casadi);
+import casadi.*;
+
+end
+

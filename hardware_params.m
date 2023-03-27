@@ -67,6 +67,21 @@ body.hip_pos = body.hip_dir_mat .* repmat(body.hip_vec,1,4);
 body.foot_pos = repmat([0; 0; -0.6*ctr.init_z],1,4); % init foot pos
 
 body.phip_swing_ref = body.hip_pos + body.foot_pos;
-body.phip_swing_ref_vec = reshape(body.phip_swing_ref,[],1); % ref foot pos at swing phase
+% ref foot pos at swing phase
+
+body.phip_swing_ref_vec = reshape(body.phip_swing_ref,[],1);
+
+body.friction_cone = [1/world.fk, 0 -1;...
+                 -1/world.fk, 0 -1;...
+                 0, 1/world.fk, -1;...
+                 0, -1/world.fk, -1];
+
+body.foot_convex_hull = [1 0 0 -body.foot_x_range;
+                        -1 0 0 -body.foot_x_range;
+                        0 1 0 -body.foot_y_range;
+                        0 -1 0 -body.foot_y_range;
+                        0 0 1 -min_dump_z;
+                        0 0 -1 -body.foot_z_range];
+                
 
 end

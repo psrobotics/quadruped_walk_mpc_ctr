@@ -5,9 +5,9 @@ len = size_arr(2);
 
 figure(1);
 
-% v = VideoWriter('jump_d1');
-% v.FrameRate = N/T;
-% open(v);
+ v = VideoWriter('jump_d3','MPEG-4');
+ v.FrameRate = N/T;
+ open(v);
 
 for k = 1:len-1
     x_t = x_arr(:,k);
@@ -27,7 +27,7 @@ for k = 1:len-1
     grid on;
     
     view(-34,33);
-    axis([-0.5,2,-1,1,0,1.2]);
+    axis([-0.5,2*4,-1,1,0,1.2]);
     
     plot_cube(r_mat,0.34,0.2,0.08,x_t(4:6));
     plot3(fp_w_1(1),fp_w_1(2),fp_w_1(3),'o','linewidth',1.2,'color','b','markersize',3);
@@ -48,12 +48,12 @@ for k = 1:len-1
     
     pause(T/N);
     
-%      frame = getframe(gcf);
-%      writeVideo(v,frame);
+      frame = getframe(gcf);
+      writeVideo(v,frame);
     
 end
 
-% close(v);
+ close(v);
 
 end
 

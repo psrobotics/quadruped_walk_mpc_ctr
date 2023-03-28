@@ -7,6 +7,10 @@ path.casadi = 'D:\matlab_lib\casadi-windows-matlabR2016a-v3.5.5';
 world.fk = 0.5; % friction
 world.g = 9.81; % gravity constant
 
+world.friction_cone = [1/world.fk, 0 -1;...
+                      -1/world.fk, 0 -1;...
+                      0, 1/world.fk, -1;...
+                      0, -1/world.fk, -1];
 
 %% Controller params
 ctr.phase_num = 4;
@@ -82,16 +86,12 @@ body.phip_swing_ref = body.hip_pos + body.foot_pos;
 
 body.phip_swing_ref_vec = reshape(body.phip_swing_ref,[],1);
 
-body.friction_cone = [1/world.fk, 0 -1;...
-                      -1/world.fk, 0 -1;...
-                      0, 1/world.fk, -1;...
-                      0, -1/world.fk, -1];
 
 body.foot_convex_hull = [1 0 0 -body.foot_x_range;
                         -1 0 0 -body.foot_x_range;
                         0 1 0 -body.foot_y_range;
                         0 -1 0 -body.foot_y_range;
-                        0 0 1 -min_dump_z;
+                        0 0 1 -ctr.min_dump_z;
                         0 0 -1 -body.foot_z_range];
                 
 

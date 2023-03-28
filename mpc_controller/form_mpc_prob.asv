@@ -1,6 +1,7 @@
 %% Get all constraints in a mpc cycle
 
-function [mpc_v, mpc_c] = form_mpc_prob(path, world_p, body_p, ctr_p, dyn_f)
+% mpc variables, mpc contraints, mpc problem & solver
+function [mpc_v, mpc_c, mpc_p] = form_mpc_prob(path, world_p, body_p, ctr_p, dyn_f)
 
 addpath(path.casadi);
 import casadi.*;
@@ -20,7 +21,7 @@ mpc_v.contact_mat_arr = SX.sym('contact_mat_arr', 4, N);
 
 mpc_v.cost_fun = 0; % the cost function
 
-%% Constraints
+%% Constraints and cost function
 N = ctr_p.N;
 state_dim = body.state_dim; % number of dim of state, rpy xyz dot_rpy dot_xyz
 f_dim = body.f_dim; % number of dim of leg force, 3*4
@@ -41,6 +42,8 @@ mpc_c.ineq_con_zforce_dir = SX.zeros(1*N,1); % z axis force always pointing up
 mpc_c.ineq_con_zforce_range = SX.zeros(4*N,1); % z axis force range, swing phase ->0, stance phase -> < max z force
 
 mpc_c.ineq_con_dim = 4*6*N + 4*4*N + N + 4*N; % dim for ieq constraints
+
+fprintf('%d eq constraints and %d ine')
 
 % define cost function and constraints
 for k = 1:N
@@ -80,7 +83,7 @@ for k = 1:N
         
         xyz_i = 3*(leg_k-1)+1:3*leg_k; % index for xyz dir
         % ground reaction force within friction cone
-        mpc_c.ineq_con_foot_friction(16*(k-1)+4*(leg_k-1)+1: 16*(k-1)+4*leg_k) = body_p.friction_cone*f_t(xyz_i);
+        mpc_c.ineq_con_foot_friction(16*(k-1)+4*(leg_k-1)+1: 16*(k-1)+4*leg_k) = world_p.friction_cone*f_t(xyz_i);
         
         % non-slip, if leg touches the ground, ffp_now = ffp_next
         if(k<N)
@@ -109,8 +112,21 @@ x_err_f = mpc_v.x_arr(:,N+1)-mpc_v.x_ref_arr(:,N+1);
 mpc_v.cost_fcn = mpc_v.cost_fcn + x_err_f'*diag(ctr_p.weight.QN)*x_err_f;
 
 % combine all constraints
-mpc_c.con_arr = [eq_con_init_state; eq_con_dynamic; eq_con_foot_contact_ground; eq_con_foot_non_slip;...
-                 ieq_con_foot_range; ieq_con_foot_friction; ieq_con_zforce_dir; ieq_con_zforce_range];
+mpc_c.constraint_arr = [mpc_c.eq_con_init_state; mpc_c.eq_con_dynamic; mpc_c.eq_con_foot_contact_ground; mpc_c.eq_con_foot_non_slip;...
+                        mpc_c.ineq_con_foot_range; mpc_c.ineq_con_foot_friction; mpc_c.ineq_con_zforce_dir; mpc_c.ineq_con_zforce_range];
+
+%% Init the optimal problem, solver
+% reform, state, leg force, foot pos into one n*1 vector
+mpc_v.opt_variables = [reshape(mpc_v.x_arr, state_dim*(N+1),1);...
+                       reshape(mpc_v.f_arr, f_dim*N,1);...
+                       reshape(mpc_v.fp_arr, fp_dim*N,1)];
+% reform, reference state, leg force, foot pos into one n*1 vector
+mpc_v.opt_ref_param =[reshape(mpc_v.x_ref_arr, state_dim*(N+1),1);...
+                      reshape(mpc_v.f_ref_arr, f_dim*N,1);...
+                      reshape(mpc_v.fp_ref_arr, fp_dim*N,1);...
+                      reshape(mpc_v.contact_mat_arr, 4*N,1)];
+% construct the mpc problem
+mpc_p.nlp_prob = struct('f',mpc_v.cost_fcn, 'x',mpc_v.opt_variables, 'p',mpc_v.opt_ref_param, 'g',mpc_c.con_arr);
 
 
 end

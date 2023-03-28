@@ -15,3 +15,5 @@ addpath('mpc_controller\');
 
 %% Get dynamics
 [dyn_f] = get_srb_dynamics(world_params, body_params, path);
+
+[mpc_v, mpc_c, mpc_p] = form_mpc_prob(path, world_params, body_params, ctr_params, dyn_f)

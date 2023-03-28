@@ -36,6 +36,17 @@ ctr.weight.QN = [10 10 10, 50 50 50, 10 10 10, 10 10 10 ]';
 ctr.weight.Qc = 1*[0.01 0.01 0.01]';
 ctr.weight.Qf = [0.0001 0.0001 0.001]';
 
+% casadi optimal settings
+ctr.opt_setting.expand =true;
+ctr.opt_setting.ipopt.max_iter=1500;
+ctr.opt_setting.ipopt.print_level=0;
+ctr.opt_setting.ipopt.acceptable_tol=1e-4;
+ctr.opt_setting.ipopt.acceptable_obj_change_tol=1e-6;
+ctr.opt_setting.ipopt.tol=1e-4;
+ctr.opt_setting.ipopt.nlp_scaling_method='gradient-based';
+ctr.opt_setting.ipopt.constr_viol_tol=1e-3;
+ctr.opt_setting.ipopt.fixed_variable_treatment='relax_bounds';
+
 %% Robot params
 
 body.state_dim = 12; % number of dim of state, rpy xyz dot_rpy dot_xyz

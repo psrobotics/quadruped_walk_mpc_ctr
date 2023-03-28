@@ -98,12 +98,19 @@ for k = 1:N
     fp_err = repmat(x_t(4:6),4,1) + body_p.phip_swing_ref_vec - fp_g_t; 
     
     % running cost
-    cost_fcn = cost_fcn + (x_err'*diag(ctr_p.weight.QX)*x_err...
+    mpc_v.cost_fcn = mpc_v.cost_fcn + (x_err'*diag(ctr_p.weight.QX)*x_err...
                            + f_err'*diag(repmat(ctr_p.weight.Qf,4,1))*f_err...
                            + fp_err'*diag(repmat(ctr_p.weight.Qc,4,1))*fp_err) * dt_t;
                        
 end
 
+% terminate cost
+x_err_f = mpc_v.x_arr(:,N+1)-mpc_v.x_ref_arr(:,N+1);
+mpc_v.cost_fcn = mpc_v.cost_fcn + x_err_f'*diag(ctr_p.weight.QN)*x_err_f;
+
+% combine all constraints
+mpc_c.constraint_arr = [mpc_c.eq_con_init_state; mpc_c.eq_con_dynamic; mpc_c.eq_con_foot_contact_ground; mpc_c.eq_con_foot_non_slip;...
+                        mpc_c.ineq_con_foot_range; mpc_c.ineq_con_foot_friction; mpc_c.ineq_con_zforce_dir; mpc_c.ineq_con_zforce_range];
 
 
 end

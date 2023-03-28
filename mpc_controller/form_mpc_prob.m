@@ -67,20 +67,35 @@ for k = 1:N
     mpc_c.ineq_con_zforce_range(4*(k-1)+1:4*k) = f_t([3,6,9,12]) - contact_mat_t.*repmat(body_p.max_zforce,4,1);
     
     for leg_k = 1:4
-        xyz_i = 3*(leg_k-1)+1:3*leg_k; % index for xyz dir
         
         % constrant leg on ground, z=0
         mpc_c.eq_con_foot_contact_ground((k-1)*4+leg_k) = contact_mat_t(leg_k)*fp_g_t(3*(leg_k-1)+3);
         
+        % keep foot within motion range
+        rot_zyx_t = rot_zyx(x_t(1:3));
+        hip_pos_global_t = rot_zyx_t*body_p.phip_swing_ref + x_t(4:6);
+        leg_vec_t = (fp_g_t(xyz_k) - hip_pos_global_t(:,leg_k)); % leg vector, from hip to foot
+        mpc_c.ineq_con_foot_range(24*(k-1)+6*(leg_k-1)+1: 24*(k-1)+6*leg_k) =...
+            body_p.foot_convex_hull*[leg_vec_t;1]; % leg's motion range limit
         
+        xyz_i = 3*(leg_k-1)+1:3*leg_k; % index for xyz dir
+        % ground reaction force within friction cone
+        mpc_c.ineq_con_foot_friction(16*(k-1)+4*(leg_k-1)+1: 16*(k-1)+4*leg_k) = body_p.friction_cone*f_t(xyz_i);
         
+        % non-slip, if leg touches the ground, ffp_now = ffp_next
+        if(k<N)
+            fp_g_next = repmat(x_arr(4:6,k+1),4,1)+mpc_v.fp_arr(:,k+1); % next foot pos in global coord
+            mpc_c.eq_con_foot_non_slip(12*(k-1)+3*(leg_k-1)+1: 12*(k-1)+3*leg_k) =...
+                contact_mat_t(leg_k)*(fp_g_next(xyz_i)-fp_g_t(xyz_i));
+        end
         
     end
     
     % Add up errors to cost fcn
     x_err = x_t - x_ref_t; % state error
     f_err = f_t - f_ref_t; % leg force error
-    fp_err = repmat(x_t(4:6),4,1) + body_p.phip_swing_ref_vec - fp_g_t; % foot placement pos error
+    % foot placement pos error. may change to fp_ref_t with fpp planner
+    fp_err = repmat(x_t(4:6),4,1) + body_p.phip_swing_ref_vec - fp_g_t; 
     
     % running cost
     cost_fcn = cost_fcn + (x_err'*diag(ctr_p.weight.QX)*x_err...

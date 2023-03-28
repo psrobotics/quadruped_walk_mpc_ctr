@@ -1,6 +1,6 @@
 %% Get all constraints in a mpc cycle
 
-function [mpc_v, mpc_c] = form_mpc_prob(path, world_p, body_p, ctr_p)
+function [mpc_v, mpc_c] = form_mpc_prob(path, world_p, body_p, ctr_p, dyn_f)
 
 addpath(path.casadi);
 import casadi.*;
@@ -17,6 +17,8 @@ mpc_v.fp_ref_arr = SX.sym('fp_ref_arr', body_p.fp_dim, ctr_p.N); % foot position
 % contact mat arr, which the leg touches ground, set by fpp_planner
 % only foot on ground can output a ground reaction force
 mpc_v.contact_mat_arr = SX.sym('contact_mat_arr', 4, N);
+
+mpc_v.cost_fun = 0; % the cost function
 
 %% Constraints
 N = ctr_p.N;
@@ -39,6 +41,55 @@ mpc_c.ineq_con_zforce_dir = SX.zeros(1*N,1); % z axis force always pointing up
 mpc_c.ineq_con_zforce_range = SX.zeros(4*N,1); % z axis force range, swing phase ->0, stance phase -> < max z force
 
 mpc_c.ineq_con_dim = 4*6*N + 4*4*N + N + 4*N; % dim for ieq constraints
+
+% define cost function and constraints
+for k = 1:N
+    x_t = mpc_v.x_arr(:,k); % current state
+    x_next = mpc_v.x_arr(:,k+1); %next state
+    
+    f_t = mpc_v.f_arr(:,k); % current force
+    fp_t = mpc_v.fp_arr(:,k); % current foot placement point
+    fp_g_t = repmat(x_arr(4:6,k),4,1)+fp_t; %foot pos in global coord
+    
+    x_ref_t = mpc_v.x_ref_arr(:,k); % current reference state
+    f_ref_t = mpc_v.f_ref_arr(:,k); % current reference force
+    fp_ref_t = mpc_v.fp_ref_arr(:,k); % current reference foot placement point
+    
+    contact_mat_t = mpc_v.contact_mat_arr(:,k); % current foot contact point
+    dt_t = ctr_p.dt_val(k);
+    
+    % constraints
+    % dynamic equation constraint
+    mpc_c.eq_con_dynamic(state_dim*(k-1)+1:state_dim*k) = x_t_next - (x_t + dyn_f(x_t,f_t,fp_t)*dt_t);
+    % zforce direction always point up
+    mpc_c.ineq_con_zforce_dir(k) = -1*dot(f_t,repmat([0;0;1],4,1));
+    % zforce range < max z force
+    mpc_c.ineq_con_zforce_range(4*(k-1)+1:4*k) = f_t([3,6,9,12]) - contact_mat_t.*repmat(body_p.max_zforce,4,1);
+    
+    for leg_k = 1:4
+        xyz_i = 3*(leg_k-1)+1:3*leg_k; % index for xyz dir
+        
+        % constrant leg on ground, z=0
+        mpc_c.eq_con_foot_contact_ground((k-1)*4+leg_k) = contact_mat_t(leg_k)*fp_g_t(3*(leg_k-1)+3);
+        
+        
+        
+        
+    end
+    
+    % Add up errors to cost fcn
+    x_err = x_t - x_ref_t; % state error
+    f_err = f_t - f_ref_t; % leg force error
+    fp_err = repmat(x_t(4:6),4,1) + body_p.phip_swing_ref_vec - fp_g_t; % foot placement pos error
+    
+    % running cost
+    cost_fcn = cost_fcn + (x_err'*diag(ctr_p.weight.QX)*x_err...
+                           + f_err'*diag(repmat(ctr_p.weight.Qf,4,1))*f_err...
+                           + fp_err'*diag(repmat(ctr_p.weight.Qc,4,1))*fp_err) * dt_t;
+                       
+end
+
+
 
 end
 

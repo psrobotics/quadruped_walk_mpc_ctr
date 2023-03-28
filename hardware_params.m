@@ -86,7 +86,7 @@ body.phip_swing_ref = body.hip_pos + body.foot_pos;
 
 body.phip_swing_ref_vec = reshape(body.phip_swing_ref,[],1);
 
-
+% the range foot can move within
 body.foot_convex_hull = [1 0 0 -body.foot_x_range;
                         -1 0 0 -body.foot_x_range;
                         0 1 0 -body.foot_y_range;

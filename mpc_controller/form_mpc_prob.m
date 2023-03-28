@@ -1,7 +1,7 @@
 %% Get all constraints in a mpc cycle
 
 % mpc variables, mpc contraints, mpc problem & solver
-function [mpc_v, mpc_c, mpc_p] = form_mpc_prob(path, world_p, body_p, ctr_p, dyn_f)
+function [mpc_v, mpc_c, mpc_p] = form_mpc_prob(world_p, body_p, ctr_p, dyn_f, path)
 
 addpath(path.casadi);
 import casadi.*;

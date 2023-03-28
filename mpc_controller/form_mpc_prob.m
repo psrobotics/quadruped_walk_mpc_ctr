@@ -127,7 +127,7 @@ mpc_v.opt_ref_param =[reshape(mpc_v.x_ref_arr, state_dim*(N+1),1);...
                       reshape(mpc_v.contact_mat_arr, 4*N,1)];
 
 % construct the mpc problem and solver
-mpc_p.nlp_prob = struct('f',mpc_v.cost_fcn, 'x',mpc_v.opt_variables, 'p',mpc_v.opt_ref_param, 'g',mpc_c.con_arr);
+mpc_p.nlp_prob = struct('f',mpc_v.cost_fcn, 'x',mpc_v.opt_variables, 'p',mpc_v.opt_ref_param, 'g',mpc_c.constraint_arr);
 mpc_p.solver = nlpsol('solver','ipopt',mpc_p.nlp_prob, ctr_p.opt_setting);
 
 end

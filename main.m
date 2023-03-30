@@ -23,6 +23,7 @@ addpath('visualization\');
 
 [boundray_v] = add_state_boundaries(mpc_v, mpc_c, world_params, body_params, ctr_params, path);
 
+%%
 [ref_traj_v] = fpp_planner(world_params, body_params, ctr_params, path);
 
 %% Slove the NLP prob
@@ -36,4 +37,6 @@ sol = mpc_p.solver('x0',ref_traj_v.x0,...
   %% Unpack data
   [x_sol, f_sol, fp_l_sol, fp_g_sol] = unpacks_sol(sol, body_params, ctr_params, path);
   
-  rbt_anime(x_sol,f_sol,fp_g_sol,[],ctr_params.T,ctr_params.N);
+  rbt_anime(x_sol,f_sol,fp_g_sol,...
+            ref_traj_v.fp_ref_val,ref_traj_v.fp_ref_val,...
+            ctr_params.T,ctr_params.N);

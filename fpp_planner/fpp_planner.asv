@@ -41,7 +41,7 @@ for k=1:ctr_p.N
    
     contact_v = ctr_p.contact_state_val(:,k);
     
-    % calcuate ref pos for swing foot
+    % calc
     period_now = mod(k,ctr_p.N/ctr_p.gait_num);
     period_now_rad = pi*(period_now/(ctr_p.N/ctr_p.gait_num));
     for leg_k = 1:4

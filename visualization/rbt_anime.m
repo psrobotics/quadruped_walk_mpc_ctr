@@ -38,8 +38,8 @@ for k = 1:len-1
     view(-34,33);
     axis([-0.5,2*4,-1,1,0,1.2]);
     
-    plot_cube(r_mat,0.34,0.2,0.08,x_t(4:6));
-    plot_cube(r_mat_ref,0.34,0.2,0.08,x_ref_t(4:6));
+    plot_cube(r_mat,0.34,0.2,0.08,x_t(4:6),'green');
+    plot_cube(r_mat_ref,0.34,0.2,0.08,x_ref_t(4:6),'black');
     
     plot3(fp_w_1(1),fp_w_1(2),fp_w_1(3),'o','linewidth',1.2,'color','b','markersize',3);
     plot3(fp_w_2(1),fp_w_2(2),fp_w_2(3),'o','linewidth',1.2,'color','b','markersize',3);

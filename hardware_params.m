@@ -72,7 +72,7 @@ ctr.contact_state_val_bound = [repmat([1;1;1;1], 1, ctr.contact_state_ratio(1)),
 ctr.contact_state_val_gallop = [repmat([1;1;0;0], 1, ctr.contact_state_ratio(1)),...
                            repmat([0;0;1;1], 1, ctr.contact_state_ratio(1))];
                        
-ctr.contact_state_val = repmat(ctr.contact_state_val_trot,1,ctr.gait_num/2);                      
+ctr.contact_state_val = repmat(ctr.contact_state_val_bound,1,ctr.gait_num/2);                      
 
                  
 % cost gains

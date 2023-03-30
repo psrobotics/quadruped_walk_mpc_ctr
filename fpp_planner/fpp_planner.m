@@ -42,17 +42,15 @@ for k=1:ctr_p.N
     contact_v = ctr_p.contact_state_val(:,k);
     
     % calcuate ref pos for swing foot
-    period_now = mod(k,ctr_p.N/ctr_p.gait_num);
-    period_now_rad = pi*(period_now/(ctr_p.N/ctr_p.gait_num));
+%     period_now = mod(k,ctr_p.N/ctr_p.gait_num);
+%     period_now_rad = pi*(period_now/(ctr_p.N/ctr_p.gait_num));
     for leg_k = 1:4
         if(contact_v(leg_k) == 0)
-            ref_traj_v.fp_ref_val(leg_k*3,k) = 0.13*sin(period_now_rad); % sine foot swing height
+            ref_traj_v.fp_ref_val(leg_k*3,k) = 0.13;%*sin(period_now_rad); % sine foot swing height
         end
     end
     
 end
-
-
 
 % combine all ref traj
 ref_traj_v.p = [reshape(ref_traj_v.x_ref_val,body_p.state_dim*(ctr_p.N+1),1);...

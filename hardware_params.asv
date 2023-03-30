@@ -14,16 +14,19 @@ world.friction_cone = [1/world.fk, 0 -1;...
 
 %% Controller params
 ctr.phase_num = 4;
-ctr.N = 80*3; % mpc period window
-ctr.T = 3*3; % mpc period time
-ctr.dt_val = (ctr.T/ctr.N) .* ones(ctr.N,1); % dt vector
+ctr.N = 24; % mpc period window local
+ctr.T = 0.5; % mpc period time local
+ctr.dt_val = (ctr.T/ctr.N) .* ones(ctr.N,1); % dt vector local
 
-ctr.max_jump_z = 0.55; % max jumping height, constraints
+ctr.sim_T = 20; % sim for 20 seconds, in 
+ctr.sim_N = ctr.sim_T / (ctr.T/ctr.N)
+
+ctr.max_jump_z = 0.45; % max jumping height, constraints
 ctr.min_dump_z = 0.15; % min standing height
 ctr.max_lift_vel_z = 6.5; % max jumping velocity
 ctr.init_z = 0.3;
 
-% Foot planner params
+% Foot planner params, velocity control input
 ctr.tar_body_vel = [0.3;0;0]; % x y z
 ctr.tar_body_angular_vel = [0;0;0.2]; % r p y, only command yaw in this case
 
@@ -35,50 +38,31 @@ ctr.dx_init_tar_val = [0; 0; 0; 0; 0; 0]; % init d state
 ctr.x_final_tar_val = [ctr.tar_body_angular_vel*ctr.T; ctr.tar_body_vel*ctr.T + [0;0;0.3]];
 ctr.dx_final_tar_val = [ctr.tar_body_angular_vel; ctr.tar_body_vel];
 
-ctr.gait_num = 24;
+ctr.gait_num_all = 48; % gait number in global setup
 
 %ctr.contact_state_ratio = ctr.N.*[0.35 0.15 0.475 0.025]; % pull, jump, flight, impact
-ctr.contact_state_ratio = ctr.N.*[1/ctr.gait_num 1/12 1/12 1/12 1/12 1/12 1/12 1/12 1/12 1/12 1/12 1/12]; % pull, jump, flight, impact
-% ctr.contact_state_val = [ones(4, ctr.contact_state_ratio(1)),...
-%                              0 * ones(4, ctr.contact_state_ratio(2)),...
-%                              ones(4, ctr.contact_state_ratio(3)),...
-%                              0 * ones(4, ctr.contact_state_ratio(4)),...
-%                              ones(4, ctr.contact_state_ratio(1)),...
-%                              0 * ones(4, ctr.contact_state_ratio(2)),...
-%                              ones(4, ctr.contact_state_ratio(3)),...
-%                              0 * ones(4, ctr.contact_state_ratio(4)),...
-%                              ones(4, ctr.contact_state_ratio(1)),...
-%                              0 * ones(4, ctr.contact_state_ratio(2)),...
-%                              ones(4, ctr.contact_state_ratio(3)),...
-%                              0 * ones(4, ctr.contact_state_ratio(4))]; % no foot contact during last 2 phases
-
-ctr.contact_state_val = [repmat([1;0;0;1], 1, ctr.contact_state_ratio(1)),...
-                         repmat([0;1;1;0], 1, ctr.contact_state_ratio(1)),...
-                         repmat([1;0;0;1], 1, ctr.contact_state_ratio(1)),...
-                         repmat([0;1;1;0], 1, ctr.contact_state_ratio(1)),...
-                         repmat([1;0;0;1], 1, ctr.contact_state_ratio(1)),...
-                         repmat([0;1;1;0], 1, ctr.contact_state_ratio(1)),...
-                         repmat([1;0;0;1], 1, ctr.contact_state_ratio(1)),...
-                         repmat([0;1;1;0], 1, ctr.contact_state_ratio(1)),...
-                         repmat([1;0;0;1], 1, ctr.contact_state_ratio(1)),...
-                         repmat([0;1;1;0], 1, ctr.contact_state_ratio(1)),...
-                         repmat([1;0;0;1], 1, ctr.contact_state_ratio(1)),...
-                         repmat([0;1;1;0], 1, ctr.contact_state_ratio(1))]; % no foot contact during last 2 phases
+ctr.contact_state_ratio = ctr.sim_N * 1/ctr.gait_num_all % pull, jump, flight, impact
                      
-ctr.contact_state_val_s = [repmat([1;0;0;1], 1, ctr.contact_state_ratio(1)),...
-                           repmat([0;1;1;0], 1, ctr.contact_state_ratio(1))]
-ctr.contact_state_val =                       
+ctr.contact_state_val_trot = [repmat([1;0;0;1], 1, ctr.contact_state_ratio),...
+                           repmat([0;1;1;0], 1, ctr.contact_state_ratio)];
+ctr.contact_state_val_bound = [repmat([1;1;1;1], 1, ctr.contact_state_ratio),...
+                           repmat([0;0;0;0], 1, ctr.contact_state_ratio)];
+ctr.contact_state_val_gallop = [repmat([1;1;0;0], 1, ctr.contact_state_ratio),...
+                           repmat([0;0;1;1], 1, ctr.contact_state_ratio)];
+                       
+ctr.contact_state_val_all = repmat(ctr.contact_state_val_trot,1,ctr.gait_num_all/2); % contact event in global setup   
+ctr.contact_state_val = []; %contact event local
 
                  
 % cost gains
 ctr.weight.QX = [10 10 10, 10 10 10, 10 10 10, 10 10 10 ]'; % state error
 ctr.weight.QN = [10 10 10, 50 50 50, 10 10 10, 10 10 10 ]'; % state error, final
-ctr.weight.Qc = 1*[5 5 5]'; % foot placement error
+ctr.weight.Qc = 1*[0.01 0.01 0.01]'; % foot placement error
 ctr.weight.Qf = [0.0001 0.0001 0.001]'; % input error
 
 % casadi optimal settings
 ctr.opt_setting.expand =true;
-ctr.opt_setting.ipopt.max_iter=1500;
+ctr.opt_setting.ipopt.max_iter=500; % 1500
 ctr.opt_setting.ipopt.print_level=0;
 ctr.opt_setting.ipopt.acceptable_tol=1e-4;
 ctr.opt_setting.ipopt.acceptable_obj_change_tol=1e-6;
@@ -100,7 +84,7 @@ body.i_mat = [body.i_vec(1) 0 0;... % roll
               0 body.i_vec(2) 0;... % pitch
               0 0 body.i_vec(3)]; % yaw
        
-body.length = 0.34;
+body.length = 0.42;
 body.width = 0.26;
 
 % foot motion range, in m

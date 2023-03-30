@@ -17,6 +17,7 @@ f_sol=reshape(full(f_sol),f_dim,N);% foot force
 
 fp_l_sol=sol.x(state_dim*(N+1)+f_dim*N+1:state_dim*(N+1)+f_dim*N+fp_dim*N);
 fp_l_sol=reshape(full(fp_l_sol),f_dim,N);% Foot pos in rbt coord
+
 fp_g_sol=fp_l_sol+repmat(x_sol(4:6,1:end-1),4,1);% Foot pos in world coord.
 
 end

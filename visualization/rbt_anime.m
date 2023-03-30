@@ -5,7 +5,7 @@ len = size_arr(2);
 
 figure(1);
 
-%  v = VideoWriter('jump_d3','MPEG-4');
+%  v = VideoWriter('jump_d6','MPEG-4');
 %  v.FrameRate = N/T;
 %  open(v);
 
@@ -64,7 +64,7 @@ for k = 1:len-1
     end
     
     pause(T/N);
-    
+%     
 %       frame = getframe(gcf);
 %       writeVideo(v,frame);
     

@@ -81,7 +81,7 @@ body.fp_dim = 12; % number of dim of leg pos, 3*4
 
 
 body.m = 5;
-body.i_vec = [0.059150 0.101150 0.046240]*2;
+body.i_vec = [0.06 0.1 0.05]*2;
 body.i_mat = [body.i_vec(1) 0 0;... % roll
               0 body.i_vec(2) 0;... % pitch
               0 0 body.i_vec(3)]; % yaw

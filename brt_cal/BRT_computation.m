@@ -1,4 +1,8 @@
 function [safety_controller, worst_dist, data, tau, g, derivatives, grid_info] = BRT_computation(params)
+
+addpath(genpath('..\tool_box\helperOC'))  
+addpath(genpath('..\tool_box\ToolboxLS'))
+
 % unpack params
 obsX1 = 0+3;
 obsY1 = 0;

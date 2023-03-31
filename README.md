@@ -4,6 +4,9 @@
 [Casadi toolbox](https://web.casadi.org/)
 
 
+![Obst t1](pic/t1/traj_e1.jpg)
+
+
 ## Gait demo
 ![jump 1](pic/jump_1.gif)
 

@@ -52,7 +52,7 @@ ctr.contact_state_val_bound = [repmat([1;1;1;1], 1, ctr.contact_state_ratio),...
 ctr.contact_state_val_gallop = [repmat([1;1;0;0], 1, ctr.contact_state_ratio),...
                            repmat([0;0;1;1], 1, ctr.contact_state_ratio)];
                        
-ctr.contact_state_val_all = repmat(ctr.contact_state_val_trot,1,ctr.gait_num_all/2); % contact event in global setup   
+ctr.contact_state_val_all = repmat(ctr.contact_state_val_bound,1,ctr.gait_num_all/2); % contact event in global setup   
 ctr.contact_state_val = []; %contact event local
 
                  

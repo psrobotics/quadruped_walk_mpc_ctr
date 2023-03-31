@@ -94,7 +94,7 @@ for k = 1:ctr_p.sim_N - ctr_p.N
     x_next_low_dim = [x_next_v(4); x_next_v(5); x_next_v(3)]; %x y pitch
     next_signed_distance = eval_u(params.g,params.data(:,:,:,end),x_next_low_dim)
     
-    if(next_signed_distance > 0)
+    if(next_signed_distance > 0.5)
         ctr_p.tar_body_vel = [tar_v*cos(tar_omega);tar_v*sin(tar_omega);0]; % x y z
     else
         omega_filtered = eval_u(params.g,params.safety_controller,x_t_low_dim)
@@ -108,11 +108,8 @@ end
 %% Unpack data
 %[x_sol, f_sol, fp_l_sol, fp_g_sol] = unpacks_sol(sol, body_p, ctr_p, path);
   
-%   rbt_anime(x_sol,f_sol,fp_g_sol,...
-%             ref_traj_v.x_ref_val,ref_traj_v.fp_ref_val,...
-%             ctr_p.T,ctr_p.N);
-  
-  rbt_anime(x_arr,f_arr,fp_g_arr,...
+%%  
+rbt_anime(x_arr,f_arr,fp_g_arr,...
             x_ref_arr,fp_g_ref_arr,...
             ctr_p.T,ctr_p.N);
  

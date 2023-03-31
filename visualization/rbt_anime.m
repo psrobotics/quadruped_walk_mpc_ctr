@@ -5,9 +5,9 @@ len = size_arr(2);
 
 figure(1);
 
-%  v = VideoWriter('jump_d6','MPEG-4');
-%  v.FrameRate = N/T;
-%  open(v);
+ v = VideoWriter('jump_d_obst2','MPEG-4');
+ v.FrameRate = N/T;
+ open(v);
 
 for k = 1:len-1
     
@@ -52,6 +52,13 @@ for k = 1:len-1
     plot3(fp_r_3(1),fp_r_3(2),fp_r_3(3),'o','linewidth',1.2,'color','g','markersize',3);
     plot3(fp_r_4(1),fp_r_4(2),fp_r_4(3),'o','linewidth',1.2,'color','g','markersize',3);
     
+    % plot obst
+    r_0 = eye(3,3);
+    obst_1_mid = [3.2;0.2;0];
+    obst_2_mid = [6.2;-0.8;0];
+    plot_cube(r_0,0.4,0.4,1,obst_1_mid,'red');
+    plot_cube(r_0,0.4,0.4,1,obst_2_mid,'red');
+    
     for i=1:4
         x_indx=3*(i-1)+1;
         y_indx=3*(i-1)+2;
@@ -64,13 +71,13 @@ for k = 1:len-1
     end
     
     pause(T/N);
-%     
-%       frame = getframe(gcf);
-%       writeVideo(v,frame);
+    
+      frame = getframe(gcf);
+      writeVideo(v,frame);
     
 end
 
-%  close(v);
+ close(v);
 
 end
 

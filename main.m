@@ -14,6 +14,12 @@ addpath('srb_dynamics\');
 addpath('mpc_controller\');
 addpath('fpp_planner\');
 addpath('visualization\');
+addpath('brt_cal\')
+
+%% TODO: Reachability analysis: Please complete the template in the BRT_computation.m file for this section to get the params
+params = get_params();
+disp('Pre-computing the safety controller with the BRT.........................')
+[params.safety_controller, params.worst_dist, params.data, params.tau, params.g, params.derivatives, params.grid_info] = BRT_computation(params); % the BRT gives us the safety controller for free
 
 %% Get dynamics
 [dyn_f] = get_srb_dynamics(world_p, body_p, path);
@@ -33,6 +39,9 @@ x_ref_arr = zeros(12,ctr_p.sim_N - ctr_p.N+1);
 fp_g_ref_arr = zeros(12,ctr_p.sim_N - ctr_p.N+1);
 
 dt_t = ctr_p.dt_val(1);
+
+tar_v = 0.4;
+tar_omega = 0;
 
 %% MPC loop
 for k = 1:ctr_p.sim_N - ctr_p.N
@@ -79,6 +88,20 @@ for k = 1:ctr_p.sim_N - ctr_p.N
     
     x_ref_arr(:,k+1) = ref_traj_v.x_ref_val(:,1);
     fp_g_ref_arr(:,k+1) = ref_traj_v.fp_ref_val(:,1);
+    
+    % get next signed distance
+    x_t_low_dim = [x_t(4); x_t(5); x_t(3)];
+    x_next_low_dim = [x_next_v(4); x_next_v(5); x_next_v(3)]; %x y pitch
+    next_signed_distance = eval_u(params.g,params.data(:,:,:,end),x_next_low_dim)
+    
+    if(next_signed_distance > 0)
+        ctr_p.tar_body_vel = [tar_v*cos(tar_omega);tar_v*sin(tar_omega);0]; % x y z
+    else
+        omega_filtered = eval_u(params.g,params.safety_controller,x_t_low_dim)
+        ctr_p.tar_body_vel = [tar_v*cos(omega_filtered);tar_v*sin(omega_filtered);0]; % x y z
+
+        ctr_p.tar_body_vel;
+    end
  
 end
                

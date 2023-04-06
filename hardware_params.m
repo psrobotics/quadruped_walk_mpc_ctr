@@ -1,9 +1,9 @@
 function [world, body, ctr, path] = hardware_params()
 %% Casadi path
 % Change to your casadi path
-path.casadi = 'tool_box\casadi-windows-matlabR2016a-v3.5.5';
-addpath(genpath('..\tool_box\helperOC'))  
-addpath(genpath('..\tool_box\ToolboxLS'))
+path.casadi = 'tool_box\casadi-3.6.0-windows64-matlab2018b';
+addpath(genpath('tool_box\helperOC'))  
+addpath(genpath('tool_box\ToolboxLS'))
 
 %% Simulation params
 world.fk = 0.5; % friction

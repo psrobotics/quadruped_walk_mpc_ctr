@@ -5,11 +5,11 @@ len = size_arr(2);
 
 figure(1);
 
-  v = VideoWriter('obst_mpc_t2','MPEG-4');
-  v.FrameRate = N/T;
-  open(v);
+  % v = VideoWriter('obst_mpc_t2','MPEG-4');
+  % v.FrameRate = N/T;
+  % open(v);
 
-for k = 1:len-1
+for k = 1:25:len-1
     x_t = x_arr(:,k);
     fp_w_1 = fp_arr(1:3,k);
     fp_w_2 = fp_arr(4:6,k);
@@ -21,7 +21,7 @@ for k = 1:len-1
     foot_pos = fp_arr(:,k);
     feetforce_used = f_arr(:,k)*0.5;
     
-    clf;
+    %clf;
     hold on;
     axis equal;
     grid on;
@@ -56,12 +56,12 @@ for k = 1:len-1
     pause(T/N);
     hold on;
     
-       frame = getframe(gcf);
-       writeVideo(v,frame);
+       % frame = getframe(gcf);
+       % writeVideo(v,frame);
     
 end
 
-  close(v);
+  % close(v);
 
 end
 

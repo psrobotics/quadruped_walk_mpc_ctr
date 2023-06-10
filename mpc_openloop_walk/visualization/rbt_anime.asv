@@ -44,8 +44,8 @@ for k = 1:len-1
     leg_vec_fr = fp_w_1 - hip_g_fr;
     leg_vec_fl = fp_w_2 - hip_g_fl;
 
-    [j_r_fr, j_p_fr] = leg_ik(leg_vec_fr,0.2,0.24);
-    [j_r_fl, j_p_fl] = leg_ik(leg_vec_fl,0.2,0.24);
+    [j_r_fr, j_p_fr] = leg_ik(leg_vec_fr,0.29,0.27);
+    [j_r_fl, j_p_fl] = leg_ik(leg_vec_fl,0.29,0.27);
 
     p_knee_g_fr = hip_g_fr + r_mat*j_p_fr.knee;
     p_knee_g_fl = hip_g_fl + r_mat*j_p_fl.knee;
@@ -58,8 +58,8 @@ for k = 1:len-1
     leg_vec_br = fp_w_3 - hip_g_br;
     leg_vec_bl = fp_w_4 - hip_g_bl;
 
-    [j_r_br, j_p_br] = leg_ik(leg_vec_br,0.2,0.24);
-    [j_r_bl, j_p_bl] = leg_ik(leg_vec_bl,0.2,0.24);
+    [j_r_br, j_p_br] = leg_ik(leg_vec_br,0.25,0.22);
+    [j_r_bl, j_p_bl] = leg_ik(leg_vec_bl,0.29,0.27);
 
     p_knee_g_br = hip_g_br + r_mat*j_p_br.knee;
     p_knee_g_bl = hip_g_bl + r_mat*j_p_bl.knee;

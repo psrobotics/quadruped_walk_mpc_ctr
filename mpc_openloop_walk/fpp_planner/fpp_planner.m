@@ -4,7 +4,7 @@ addpath(path.casadi);
 import casadi.*;
 
 %% Generate reference trajectory
-fp_ref_i = diag([1 1 1, 1 -1 1, -1 1 1, -1 -1 1])*repmat([0.4 0.2 -1*ctr_p.init_z],1,4)'; % foot pos ref
+%fp_ref_i = diag([1 1 1, 1 -1 1, -1 1 1, -1 -1 1])*repmat([0.4 0.2 -1*ctr_p.init_z],1,4)'; % foot pos ref
 
 ref_traj_v.x_ref_val = zeros(12,ctr_p.N+1);
 ref_traj_v.f_ref_val = zeros(12,ctr_p.N);

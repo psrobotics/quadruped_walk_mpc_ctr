@@ -12,10 +12,10 @@ j_rad_arr.a1 = atan2(z,y);
 
 b1 = acos((l1^2+d_xyz^2-l2^2)/(2*l1*d_xyz));
 b2 = atan2( -1*d_yz,x );
-j_rad_arr.a2 = 2*b1b2; % ori b1+b2
+j_rad_arr.a2 = b2-b1; % ori b1+b2
 
 b3 = ( (l1^2+l2^2-d_xyz^2)/(2*l1*l2) );
-j_rad_arr.a3 = pi+j_rad_arr.a2-b3;
+j_rad_arr.a3 = b3-(pi-j_rad_arr.a2);%pi+j_rad_arr.a2-b3;
 
 j_pos_arr.hip = [0;0;0];
 d1 = l1*sin(j_rad_arr.a2);

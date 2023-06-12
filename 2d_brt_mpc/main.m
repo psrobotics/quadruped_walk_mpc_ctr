@@ -6,7 +6,7 @@ close all; warning off;
 %% Get hardware params & set package path
 [world_p, body_p, ctr_p, path] = hardware_params();
 
-addpath(path.casadi);
+addpath(genpath(path.casadi));
 import casadi.*;
 
 addpath('math\');

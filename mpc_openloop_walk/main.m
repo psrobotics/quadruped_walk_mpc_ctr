@@ -22,7 +22,7 @@ addpath('visualization\');
 [mpc_v, mpc_c, mpc_p] = form_mpc_prob(world_params, body_params, ctr_params, dyn_f, path);
 
 [boundray_v] = add_state_boundaries(mpc_v, mpc_c, world_params, body_params, ctr_params, path);
-
+%%
 [ref_traj_v] = fpp_planner(world_params, body_params, ctr_params, path);
 
 %% Slove the NLP prob

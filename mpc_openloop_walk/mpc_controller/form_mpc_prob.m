@@ -98,7 +98,8 @@ for k = 1:N
     x_err = x_t - x_ref_t; % state error
     f_err = f_t - f_ref_t; % leg force error
     % foot placement pos error. may change to fp_ref_t with fpp planner
-    fp_err = repmat(x_t(4:6),4,1) + body_p.phip_swing_ref_vec - fp_g_t; 
+    % fp_err = repmat(x_t(4:6),4,1) + body_p.phip_swing_ref_vec - fp_g_t; 
+    fp_err = fp_g_t - fp_ref_t;
     
     % running cost
     mpc_v.cost_fcn = mpc_v.cost_fcn + (x_err'*diag(ctr_p.weight.QX)*x_err...

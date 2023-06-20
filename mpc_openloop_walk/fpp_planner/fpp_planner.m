@@ -18,7 +18,7 @@ end
 % spine on the z axis
 s_a = [ref_traj_v.x_ref_val(4,1),ref_traj_v.x_ref_val(4,ctr_p.N/2),ref_traj_v.x_ref_val(4,ctr_p.N)]; % x axis
 s_b = [ctr_p.x_init_tar_val(6),ctr_p.x_final_tar_val(6),ctr_p.x_init_tar_val(6)+0]; % z axis
-ref_traj_v.x_ref_val(6,:) = interp1(s_a,s_b,ref_traj_v.x_ref_val(4,:),'spline');
+ref_traj_v.x_ref_val(6,:) = interp1(s_a,s_b,ref_traj_v.x_ref_val(4,:),'spline'); % spline
 
 
 % calcuate foot placement points, openloop one

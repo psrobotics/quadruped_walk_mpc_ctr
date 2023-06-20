@@ -5,7 +5,7 @@ len = size_arr(2);
 
 figure(1);
 
- v = VideoWriter('f_bounding_1','MPEG-4');
+ v = VideoWriter('c_walking_1','MPEG-4');
  v.FrameRate = N/T;
  open(v);
 

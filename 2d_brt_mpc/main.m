@@ -44,6 +44,12 @@ dt_t = ctr_p.dt_val(1);
 tar_v = 0.4;
 tar_omega = 0;
 
+%%
+x_sol = [];
+f_sol = [];
+fp_l_sol = [];
+fp_g_sol = diag([1 1 1, 1 -1 1, -1 1 1, -1 -1 1])*repmat([0.4 0.2 -1*ctr_p.init_z],1,4)';
+
 %% MPC loop
 for k = 1:ctr_p.sim_N - ctr_p.N
     
@@ -61,8 +67,11 @@ for k = 1:ctr_p.sim_N - ctr_p.N
     % get current contact events
     ctr_p.contact_state_val = ctr_p.contact_state_val_all(:, k:k+ctr_p.N-1);
     
+    old_states.x = x_arr(:,k);
+    old_states.fp_g = fp_g_sol(:,1); % fpp from last time
+
     % plan the local reference x,dx,fpp traj based on updated contact event, desired states
-    [ref_traj_v] = fpp_planner(world_p, body_p, ctr_p, path);
+    [ref_traj_v] = fpp_planner(world_p, body_p, ctr_p, old_states, path);
     
     % Slove the NLP prob for this mpc horizon
     sol = mpc_p.solver('x0',ref_traj_v.x0,...
@@ -113,4 +122,6 @@ end
 rbt_anime(x_arr,f_arr,fp_g_arr,...
             x_ref_arr,fp_g_ref_arr,...
             ctr_p.T,ctr_p.N);
+%%
+plot(fp_g_arr(1,:))
  

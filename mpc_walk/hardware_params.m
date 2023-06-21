@@ -4,7 +4,7 @@ function [world, body, ctr, path] = hardware_params()
 path.casadi = 'D:\matlab_lib\casadi-windows-matlabR2016a-v3.5.5';
 
 %% Simulation params
-world.fk = 0.5; % friction
+world.fk = 0.6; % friction
 world.g = 9.81; % gravity constant
 
 world.friction_cone = [1/world.fk, 0 -1;...
@@ -70,25 +70,27 @@ ctr.contact_state_val = [repmat([1;0;0;1], 1, ctr.contact_state_ratio(1)),...
 %                          repmat([0;0;1;1], 1, ctr.contact_state_ratio(1))]; % no foot contact during last 2 phases
 
 ctr.gait_num = 12;
-                 
+ 
+%% mpc gains
 % cost gains
 ctr.weight.QX = [10 10 10, 10 10 10, 10 10 10, 10 10 10 ]'; % state error
 ctr.weight.QN = [10 10 10, 50 50 50, 10 10 10, 10 10 10 ]'; % state error, final
 ctr.weight.Qc = 1*[5 5 5]'; % foot placement error
 ctr.weight.Qf = [0.0001 0.0001 0.001]'; % input error
 
+%% casadi optimal setting
 % casadi optimal settings
 ctr.opt_setting.expand =true;
-ctr.opt_setting.ipopt.max_iter=1500;
+ctr.opt_setting.ipopt.max_iter=120; % 1500
 ctr.opt_setting.ipopt.print_level=0;
-ctr.opt_setting.ipopt.acceptable_tol=1e-4;
-ctr.opt_setting.ipopt.acceptable_obj_change_tol=1e-6;
-ctr.opt_setting.ipopt.tol=1e-4;
+ctr.opt_setting.ipopt.acceptable_tol=1e-4 * 10;
+ctr.opt_setting.ipopt.acceptable_obj_change_tol=1e-6 * 10;
+ctr.opt_setting.ipopt.tol=1e-4 * 10;
 ctr.opt_setting.ipopt.nlp_scaling_method='gradient-based';
-ctr.opt_setting.ipopt.constr_viol_tol=1e-3;
+ctr.opt_setting.ipopt.constr_viol_tol=1e-3 * 10;
 ctr.opt_setting.ipopt.fixed_variable_treatment='relax_bounds';
 
-%% Robot params
+%% Robot hardware params
 
 body.state_dim = 12; % number of dim of state, rpy xyz dot_rpy dot_xyz
 body.f_dim = 12; % number of dim of leg force, 3*4

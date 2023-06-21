@@ -43,7 +43,7 @@ mpc_c.ineq_con_zforce_range = SX.zeros(4*N,1); % z axis force range, swing phase
 
 mpc_c.ineq_con_dim = 4*6*N + 4*4*N + N + 4*N; % dim for ieq constraints
 
-fprintf('%d eq constraints and %d ineq constraints', mpc_c.eq_con_dim, mpc_c.ineq_con_dim);
+fprintf('%d eq constraints and %d ineq constraints\n', mpc_c.eq_con_dim, mpc_c.ineq_con_dim);
 
 % define cost function and constraints
 for k = 1:N

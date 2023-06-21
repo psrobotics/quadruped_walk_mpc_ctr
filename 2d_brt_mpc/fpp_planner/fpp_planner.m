@@ -1,4 +1,4 @@
-function [ref_traj_v] = fpp_planner(world_p, body_p, ctr_p, path)
+function [ref_traj_v] = fpp_planner(world_p, body_p, ctr_p, old_states, path)
 
 addpath(path.casadi);
 import casadi.*;
@@ -51,6 +51,9 @@ for k=1:ctr_p.N
     end
     
 end
+
+% copy old fpp
+ref_traj_v.fp_ref_val(:,1) = old_states.fp_g;
 
 % combine all ref traj
 ref_traj_v.p = [reshape(ref_traj_v.x_ref_val,body_p.state_dim*(ctr_p.N+1),1);...

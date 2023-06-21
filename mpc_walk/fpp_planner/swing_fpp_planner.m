@@ -1,5 +1,6 @@
 function [fpp_swing_t, d_fpp_swing_t] = swing_fpp_planner(fpp_start, fpp_end, fpp_h, t_sw)
 % calc single opti swing fpp based on local gait clock
+% opti min energy during the swing phase
 
 fpp_s_e = fpp_end - fpp_start;
 

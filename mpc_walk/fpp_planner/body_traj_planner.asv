@@ -1,0 +1,15 @@
+function [state_traj] = body_traj_planner(x_init ,vel_tar, horizon_steps_num, dt)
+% body traj planner
+% calcuate a mpc horizon's global body traj with desired velocity input
+
+% r p y x y z, and their velocity, 6+6
+state_traj = zeros(12,horizon_steps_num); 
+% copy input init state and target velocity, 6x1
+state_traj(1:6,1) = x_init;
+state_traj(7:12,1) = vel_tar
+
+for k=1:horizon_steps_num
+end
+
+end
+

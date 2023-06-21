@@ -74,7 +74,7 @@ ctr.gait_num = 12;
 %% new controller params
 ctr.t_gloal_n = 0; % global clock
 
-ctr.t_gait = 2.0; % time for each gait cycle
+ctr.t_gait = 1.5; % time for each gait cycle
 ctr.dt = 0.001; % simulation timestep
 
 % steps in one mpc horizon window
@@ -89,8 +89,8 @@ ctr.gait_tar = 1; % 1 trot, 2 pace, 3 bounding, 4 gallop
 % each gait have 4 phase, 
 % each col is a contact event for 4 legs at a time step
 ctr.contact_trot = [[1;0;0;1],[0;1;1;0],[1;0;0;1],[0;1;1;0]];
-ctr.contact_pace = [[1;0;1;0],[0;1;0;1],[1;0;1;0],[0;1;0;1]];
-ctr.contact_bound = [[1;1;0;0],[0;0;1;1],[1;1;0;0],[0;0;1;1]];
+ctr.contact_pace = [[1;1;0;0],[0;0;1;1],[1;1;0;0],[0;0;1;1]];
+ctr.contact_bounding = [[1;1;0;0],[0;0;1;1],[1;1;0;0],[0;0;1;1]];
 ctr.contact_gallop = [[1;1;1;1],[0;0;0;0],[1;1;1;1],[0;0;0;0]];
  
 %% mpc gains

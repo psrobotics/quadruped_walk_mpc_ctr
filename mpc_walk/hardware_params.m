@@ -70,6 +70,22 @@ ctr.contact_state_val = [repmat([1;0;0;1], 1, ctr.contact_state_ratio(1)),...
 %                          repmat([0;0;1;1], 1, ctr.contact_state_ratio(1))]; % no foot contact during last 2 phases
 
 ctr.gait_num = 12;
+
+%% new controller params
+ctr.t_gloal_n = 0; % global clock
+
+ctr.t_gait = 1.5; % time for each gait cycle
+ctr.dt = 0.001; % simulation timestep
+
+% steps in one mpc horizon window
+ctr.mpc_horizon_steps = 1000; 
+% mpc simulation timestep
+ctr.dt_mpc = 0.05;
+% time for one mpc horizon
+ctr.t_mpc_horizon = ctr.dt_mpc*ctr.mpc_horizon_steps;
+
+ctr.gait_tar = 1; % 1 trot
+
  
 %% mpc gains
 % cost gains

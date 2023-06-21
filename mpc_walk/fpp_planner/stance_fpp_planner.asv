@@ -1,0 +1,7 @@
+function [outputArg1,outputArg2] = stance_fpp_planner(inputArg1,inputArg2)
+% plan a single fpp from target velocity and 
+%   此处显示详细说明
+outputArg1 = inputArg1;
+outputArg2 = inputArg2;
+end
+

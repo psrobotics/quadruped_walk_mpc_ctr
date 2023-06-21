@@ -12,7 +12,7 @@ for k=1:horizon_steps_num-1
     % input velocity is in local coordinate, while state traj is under global coordinate
     % turn it into global coordinate
     xyz_vel_local = vel_tar_local(4:6);
-    % get yaw rotation mat
+    % get current body rotation mat
     rot_mat_t = rot_zyx(x_t(1:3));
     xyz_vel_global = rot_mat_t*xyz_vel_local;
     % copy the rpy velocity, and xyz velocity under world coord

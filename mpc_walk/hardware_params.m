@@ -86,19 +86,24 @@ ctr.t_mpc_horizon = ctr.dt_mpc*ctr.mpc_horizon_steps;
 
 % gait params
 ctr.gait_tar = 1; % 1 trot, 2 pace, 3 bounding, 4 gallop
+% gait height
+ctr.gait_h = 1.5;
 % each gait have 4 phase, 
 % each col is a contact event for 4 legs at a time step
-ctr.contact_trot = [[1;0;0;1],[0;1;1;0],[1;0;0;1],[0;1;1;0]];
-ctr.contact_pace = [[1;0;1;0],[0;1;0;1],[1;0;1;0],[0;1;0;1]];
-ctr.contact_bound = [[1;1;0;0],[0;0;1;1],[1;1;0;0],[0;0;1;1]];
-ctr.contact_gallop = [[1;1;1;1],[0;0;0;0],[1;1;1;1],[0;0;0;0]];
+ctr.contact_trot = [[1;0;0;1],[1;0;0;1],[0;1;1;0],[0;1;1;0]];
+ctr.contact_pace = [[1;0;1;0],[1;0;1;0],[0;1;0;1],[0;1;0;1]];
+ctr.contact_bound = [[1;1;0;0],[1;1;0;0],[0;0;1;1],[0;0;1;1]];
+ctr.contact_gallop = [[1;1;1;1],[1;1;1;1],[0;0;0;0],[0;0;0;0]];
+
+% kp for gait p controller
+ctr.gait_k_p = 0.03;
  
 %% mpc gains
 % cost gains
 ctr.weight.QX = [10 10 10, 10 10 10, 10 10 10, 10 10 10 ]'; % state error
 ctr.weight.QN = [10 10 10, 50 50 50, 10 10 10, 10 10 10 ]'; % state error, final
 ctr.weight.Qc = 1*[5 5 5]'; % foot placement error
-ctr.weight.Qf = [0.0001 0.0001 0.001]'; % input error
+ctr.weight.Qf = [0.0001 0.0001 0.001]'; % force error, min energy
 
 %% casadi optimal setting
 % casadi optimal settings

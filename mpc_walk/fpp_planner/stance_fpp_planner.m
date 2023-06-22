@@ -56,14 +56,17 @@ for k=1:ctr_p.mpc_horizon_steps
         % store old fpp
         fpp_mat_now = fpp_mat_next;
         % when first enter phase 1 or 3, calc next stance fpp
-        p_symmetry = t_global_stance/2*state_traj(4:6,k) + ...
-                     ctr_p.gait_k_p*(state_traj(4:6,k)-vel_tar_local(4:6));
+        rot_mat_t = rot_zyx(state_traj(1:3,k));
+        % get global target linear velocity (v cmd in global coord)
+        xyz_vel_global = rot_mat_t*vel_tar_local(4:6);
+        p_symmetry = t_global_stance/2*state_traj(10:12,k) + ...
+                     ctr_p.gait_k_p*(state_traj(10:12,k)-xyz_vel_global);
         com_z = state_traj(6,k);
         p_cent = 0.5*sqrt(com_z/world_p.g) * ...
-                 cross(state_traj(4:6,k),vel_tar_local(1:3));
+                 cross(state_traj(10:12,k),vel_tar_local(1:3));
         for leg_k = 1:4
             p_shoulder = state_traj(4:6,k) + ...
-                         rot_zyx(state_traj(1:3,k))*hip_vec(:,leg_k);
+                         rot_mat_t*hip_vec(:,leg_k);
             p_next = p_shoulder+p_symmetry+p_cent;
             % set locol fpp z height (=0 if no terrain sensor)
             p_next(3) = 0;

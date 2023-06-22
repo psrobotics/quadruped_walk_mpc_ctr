@@ -1,5 +1,5 @@
 function [ref_fpp_traj, ref_contact_event]...
-    = stance_fpp_planner(state_traj, x_init ,vel_tar_local, world_p, body_p, ctr_p)
+    = stance_fpp_planner(state_traj, vel_tar_local, world_p, body_p, ctr_p)
 % plan and combine stance swing fpps, and contact matrix from target
 % velocity and gait clocks
 
@@ -52,18 +52,21 @@ for k=1:ctr_p.mpc_horizon_steps
     ref_contact_event(:,k) = contact_mat(:,phase_local_gait_n);
 
     if (phase_local_gait_n==1 && phase_local_gait_old~=1) || (phase_local_gait_n==3 && phase_local_gait_old~=3)
-        fprintf('calc next fpp\n');
+        %fprintf('calc next fpp\n');
         % store old fpp
         fpp_mat_now = fpp_mat_next;
         % when first enter phase 1 or 3, calc next stance fpp
-        p_symmetry = t_global_stance/2*state_traj(4:6,k) + ...
-                     ctr_p.gait_k_p*(state_traj(4:6,k)-vel_tar_local(4:6));
+        rot_mat_t = rot_zyx(state_traj(1:3,k));
+        % get global target linear velocity (v cmd in global coord)
+        xyz_vel_global = rot_mat_t*vel_tar_local(4:6);
+        p_symmetry = t_global_stance/2*state_traj(10:12,k) + ...
+                     ctr_p.gait_k_p*(state_traj(10:12,k)-xyz_vel_global);
         com_z = state_traj(6,k);
         p_cent = 0.5*sqrt(com_z/world_p.g) * ...
                  cross(state_traj(4:6,k),vel_tar_local(1:3));
         for leg_k = 1:4
             p_shoulder = state_traj(4:6,k) + ...
-                         rot_zyx(state_traj(1:3,k))*hip_vec(:,leg_k);
+                         rot_mat_t*hip_vec(:,leg_k);
             p_next = p_shoulder+p_symmetry+p_cent;
             % set locol fpp z height (=0 if no terrain sensor)
             p_next(3) = 0;
@@ -75,14 +78,18 @@ for k=1:ctr_p.mpc_horizon_steps
     for leg_k=1:4
         contact = ref_contact_event(leg_k,k);
         if contact % stance
-            ref_fpp_traj((leg_k-1)*3+1:(leg_k-1)*3+3,k) = ...
-
+            % just copy current stance fpp
+            ref_fpp_traj((leg_k-1)*3+1:(leg_k-1)*3+3,k) = fpp_mat_now(:,leg_k);
         else % swing
             % local swing clock, 0~1, reset each half cycle
             t_local_swing_n = 2*mod(t_local_gait_n,0.5);
+            fpp_start = fpp_mat_now(:,leg_k);
+            fpp_end = fpp_mat_next(:,leg_k);
+            % get swing leg traj at time k
+            fpp_swing_t = swing_fpp_planner(fpp_start, fpp_end, ctr_p.gait_h, t_local_swing_n);
+            ref_fpp_traj((leg_k-1)*3+1:(leg_k-1)*3+3,k) = fpp_swing_t;
         end
     end
-
 
     phase_local_gait_old = phase_local_gait_n;
     t_global_n = t_global_n + dt_mpc;

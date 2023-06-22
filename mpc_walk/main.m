@@ -25,7 +25,7 @@ addpath('visualization\');
 %%
 %[ref_traj_v] = fpp_planner(world_params, body_params, ctr_params, path);
 x_init = [0;0;0; 0;0;0.3];
-vel_tar = [0;0;0.05; 1;0;0];
+vel_tar = [0;0;0.05; 0.35;0;0];
 [ref_traj_v] = ref_traj_planner(x_init, vel_tar, world_params, body_params, ctr_params, path);
 
 %% Slove the NLP prob

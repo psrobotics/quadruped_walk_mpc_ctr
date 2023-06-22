@@ -74,20 +74,20 @@ ctr.gait_num = 12;
 %% new controller params
 ctr.t_gloal_n = 0; % global clock
 
-ctr.t_gait = 2.0; % time for each gait cycle
+ctr.t_gait = 1.0; % time for each gait cycle
 ctr.dt = 0.001; % simulation timestep
 
 % steps in one mpc horizon window
-ctr.mpc_horizon_steps = 1000; 
+ctr.mpc_horizon_steps = 200; 
 % mpc simulation timestep
-ctr.dt_mpc = 0.05;
+ctr.dt_mpc = 0.03;
 % time for one mpc horizon
 ctr.t_mpc_horizon = ctr.dt_mpc*ctr.mpc_horizon_steps;
 
 % gait params
 ctr.gait_tar = 1; % 1 trot, 2 pace, 3 bounding, 4 gallop
 % gait height
-ctr.gait_h = 1.5;
+ctr.gait_h = 0.12;
 % each gait have 4 phase, 
 % each col is a contact event for 4 legs at a time step
 ctr.contact_trot = [[1;0;0;1],[1;0;0;1],[0;1;1;0],[0;1;1;0]];
@@ -108,13 +108,13 @@ ctr.weight.Qf = [0.0001 0.0001 0.001]'; % force error, min energy
 %% casadi optimal setting
 % casadi optimal settings
 ctr.opt_setting.expand =true;
-ctr.opt_setting.ipopt.max_iter=120; % 1500
+ctr.opt_setting.ipopt.max_iter=800; % 1500
 ctr.opt_setting.ipopt.print_level=0;
-ctr.opt_setting.ipopt.acceptable_tol=1e-4 * 10;
-ctr.opt_setting.ipopt.acceptable_obj_change_tol=1e-6 * 10;
-ctr.opt_setting.ipopt.tol=1e-4 * 10;
+ctr.opt_setting.ipopt.acceptable_tol=1e-4 * 1;
+ctr.opt_setting.ipopt.acceptable_obj_change_tol=1e-6 * 1;
+ctr.opt_setting.ipopt.tol=1e-4 * 1;
 ctr.opt_setting.ipopt.nlp_scaling_method='gradient-based';
-ctr.opt_setting.ipopt.constr_viol_tol=1e-3 * 10;
+ctr.opt_setting.ipopt.constr_viol_tol=1e-3 * 1;
 ctr.opt_setting.ipopt.fixed_variable_treatment='relax_bounds';
 
 %% Robot hardware params

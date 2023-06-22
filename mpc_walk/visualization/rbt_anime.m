@@ -27,6 +27,7 @@ for k = 1:len-1
     grid on;
     
     view(-34,33);
+    %view(0,90);
     axis([x_t(4)-0.9, x_t(4)+0.9, x_t(5)-0.9, x_t(5)+0.9, 0, 1.0]);
     
     % plot body
@@ -38,7 +39,7 @@ for k = 1:len-1
     plot3(fp_w_4(1),fp_w_4(2),fp_w_4(3),'o','linewidth',1.2,'color','b','markersize',6);
 
     % get leg ik info
-    %% front legs
+    %% front legs, remeber to convert from local to global coord
     hip_g_fr = x_t(4:6) + r_mat * [0.34/2; 0.3/2; 0];
     hip_g_fl = x_t(4:6) + r_mat * [0.34/2; -0.3/2; 0];
     leg_vec_fr = fp_w_1 - hip_g_fr;

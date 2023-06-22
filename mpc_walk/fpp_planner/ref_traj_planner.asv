@@ -1,0 +1,16 @@
+function [ref_traj_v] = fpp_planner(x_init, vel_tar_local, world_p, body_p, ctr_p, path)
+% generate ref and initial guess traj for 1 mpc cycle with target velocity
+% x init - init pose, 6*1
+% vel_tar_local - target input velocity in body coordinate, dot rpy, xyz, 6*1
+
+horizon_num = ctr_p.mpc_horizon_steps;
+dt_mpc = c
+% first get ref body traj
+[state_traj] = body_traj_planner(x_init ,vel_tar_local, horizon_num, dt_mpc)
+
+
+addpath(path.casadi);
+import casadi.*;
+
+end
+

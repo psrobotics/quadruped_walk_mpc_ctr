@@ -7,22 +7,22 @@ addpath(path.casadi);
 import casadi.*;
 
 %% Casadi variables array in one prediction widow
-mpc_v.x_arr = SX.sym('x_arr', body_p.state_dim, ctr_p.N+1); % state
-mpc_v.f_arr = SX.sym('f_arr', body_p.f_dim, ctr_p.N); % foot force / input
-mpc_v.fp_arr = SX.sym('fp_arr', body_p.fp_dim, ctr_p.N); % foot position
+mpc_v.x_arr = SX.sym('x_arr', body_p.state_dim, ctr_p.mpc_horizon_steps+1); % state
+mpc_v.f_arr = SX.sym('f_arr', body_p.f_dim, ctr_p.mpc_horizon_steps); % foot force / input
+mpc_v.fp_arr = SX.sym('fp_arr', body_p.fp_dim, ctr_p.mpc_horizon_steps); % foot position
 
 %% Reference traj
-mpc_v.x_ref_arr = SX.sym('x_ref_arr', body_p.state_dim, ctr_p.N+1); % state
-mpc_v.f_ref_arr = SX.sym('f_ref_arr', body_p.f_dim, ctr_p.N); % foot force
-mpc_v.fp_ref_arr = SX.sym('fp_ref_arr', body_p.fp_dim, ctr_p.N); % foot position
+mpc_v.x_ref_arr = SX.sym('x_ref_arr', body_p.state_dim, ctr_p.mpc_horizon_steps+1); % state
+mpc_v.f_ref_arr = SX.sym('f_ref_arr', body_p.f_dim, ctr_p.mpc_horizon_steps); % foot force
+mpc_v.fp_ref_arr = SX.sym('fp_ref_arr', body_p.fp_dim, ctr_p.mpc_horizon_steps); % foot position
 % contact mat arr, which the leg touches ground, set by fpp_planner
 % only foot on ground can output a ground reaction force
-mpc_v.contact_mat_arr = SX.sym('contact_mat_arr', 4, ctr_p.N);
+mpc_v.contact_mat_arr = SX.sym('contact_mat_arr', 4, ctr_p.mpc_horizon_steps);
 
 mpc_v.cost_fcn = 0; % the cost function
 
 %% Constraints and cost function
-N = ctr_p.N;
+N = ctr_p.mpc_horizon_steps;
 state_dim = body_p.state_dim; % number of dim of state, rpy xyz dot_rpy dot_xyz
 f_dim = body_p.f_dim; % number of dim of leg force, 3*4
 fp_dim = body_p.fp_dim; % number of dim of leg pos, 3*4
@@ -59,7 +59,8 @@ for k = 1:N
     fp_ref_t = mpc_v.fp_ref_arr(:,k); % current reference foot placement point
     
     contact_mat_t = mpc_v.contact_mat_arr(:,k); % current foot contact point
-    dt_t = ctr_p.dt_val(k);
+    % mpc dt
+    dt_t = ctr_p.dt_mpc;
     
     % constraints
     % dynamic equation constraint

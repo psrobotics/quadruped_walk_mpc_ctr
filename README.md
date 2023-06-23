@@ -5,7 +5,7 @@
 
 
 ## Gait demo
-![walking 1](qp_openloop_walk\pic\s_walking_1.gif)
+![walking 1](qp_openloop_walk/pic/s_walking_1.gif)
 
 
 ## Obstacle avoidance via BRT

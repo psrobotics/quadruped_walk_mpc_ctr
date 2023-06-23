@@ -1,5 +1,5 @@
-function [ref_traj_v, fpp_mat_now, fpp_mat_next, fpp_u_flag] =...
-    ref_traj_planner(x_init, vel_tar_local, fpp_mat_now, fpp_mat_next, fpp_u_flag, world_p, body_p, ctr_p, path)
+function [ref_traj_v, ctr_p] =...
+    ref_traj_planner(x_init, vel_tar_local, world_p, body_p, ctr_p, path)
 % generate ref and initial guess traj for 1 mpc cycle with target velocity
 % x init - init pose, 6*1
 % vel_tar_local - target input velocity in body coordinate, dot rpy, xyz, 6*1
@@ -13,8 +13,8 @@ dt_mpc = ctr_p.dt_mpc;
 % first get ref body traj
 [state_traj] = body_traj_planner(x_init, vel_tar_local, horizon_step_num, dt_mpc);
 % get fpp and contact event
-[ref_fpp_traj, ref_contact_event, fpp_mat_now, fpp_mat_next, fpp_u_flag]...
-    = stance_fpp_planner(state_traj, vel_tar_local, fpp_mat_now, fpp_mat_next, fpp_u_flag, world_p, body_p, ctr_p);
+[ref_fpp_traj, ref_contact_event, ctr_p]...
+    = stance_fpp_planner_n(state_traj, vel_tar_local, world_p, body_p, ctr_p);
 
 ref_traj_v.x_ref_val = state_traj;
 % just set all initial GRForces to be zero 

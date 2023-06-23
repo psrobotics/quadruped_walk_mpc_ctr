@@ -53,6 +53,16 @@ for k=1:ctr_p.mpc_horizon_steps
     
     % which phase current gait in, 4 phases in total, 1~4
     phase_local_gait_n = ceil(t_local_gait_n/0.25);
+    % phase_local_gait_n = 0;
+    % if t_local_gait_n >=0 && t_local_gait_n < 0.25
+    %     phase_local_gait_n = 1;
+    % elseif t_local_gait_n >=0.25 && t_local_gait_n < 0.5
+    %     phase_local_gait_n = 2;
+    % elseif t_local_gait_n >=0.5 && t_local_gait_n < 0.75
+    %     phase_local_gait_n = 3;
+    % elseif t_local_gait_n >=0.75 && t_local_gait_n <= 1
+    %     phase_local_gait_n = 4;
+    % end
     % fill current contact event
     ref_contact_event(:,k) = contact_mat(:,phase_local_gait_n);
 
@@ -104,7 +114,8 @@ for k=1:ctr_p.mpc_horizon_steps
             fpp_end = fpp_mat_next(:,leg_k);
             % get swing leg traj at time k
             fpp_swing_t = swing_fpp_planner(fpp_start, fpp_end, ctr_p.gait_h, t_local_swing_n);
-            ref_fpp_traj((leg_k-1)*3+1:(leg_k-1)*3+3,k) = fpp_swing_t;
+
+            ref_fpp_traj((leg_k-1)*3+1:(leg_k-1)*3+3,k) = [-0.5;-0.5;fpp_swing_t(3)];%fpp_swing_t;
 
             %fprintf('phase %d, swing leg %d, swing clock %f \n',phase_local_gait_n,leg_k,t_local_swing_n);
             %fprintf('x start %f, x end %f \n',fpp_start(1),fpp_end(1));

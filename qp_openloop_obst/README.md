@@ -1,1 +1,0 @@
-# quadeuped_walk_mpc_ctr

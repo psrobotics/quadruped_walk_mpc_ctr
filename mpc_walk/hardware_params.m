@@ -78,9 +78,9 @@ ctr.t_gait = 1.0; % time for each gait cycle
 ctr.dt = 0.001; % simulation timestep
 
 % steps in one mpc horizon window
-ctr.mpc_horizon_steps = 200; 
-% mpc simulation timestep
-ctr.dt_mpc = 0.03;
+ctr.mpc_horizon_steps = 10; 
+% mpc simulation timestp
+ctr.dt_mpc = 0.0025;
 % time for one mpc horizon
 ctr.t_mpc_horizon = ctr.dt_mpc*ctr.mpc_horizon_steps;
 
@@ -96,13 +96,13 @@ ctr.contact_bound = [[1;1;0;0],[1;1;0;0],[0;0;1;1],[0;0;1;1]];
 ctr.contact_gallop = [[1;1;1;1],[1;1;1;1],[0;0;0;0],[0;0;0;0]];
 
 % kp for gait p controller
-ctr.gait_k_p = 0.03;
+ctr.gait_k_p = 0.00;
  
 %% mpc gains
 % cost gains
 ctr.weight.QX = [10 10 10, 10 10 10, 10 10 10, 10 10 10 ]'; % state error
-ctr.weight.QN = [10 10 10, 50 50 50, 10 10 10, 10 10 10 ]'; % state error, final
-ctr.weight.Qc = 1*[5 5 5]'; % foot placement error
+ctr.weight.QN = [10 10 10, 10 10 10, 10 10 10, 10 10 10 ]'; % state error, final
+ctr.weight.Qc = 200*[5 5 5]'; % foot placement error
 ctr.weight.Qf = [0.0001 0.0001 0.001]'; % force error, min energy
 
 %% casadi optimal setting

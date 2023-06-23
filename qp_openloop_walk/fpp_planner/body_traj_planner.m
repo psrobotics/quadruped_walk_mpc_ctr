@@ -6,9 +6,7 @@ function [state_traj] = body_traj_planner(x_init ,vel_tar_local, horizon_steps_n
 % r p y x y z, and their velocity, 6+6
 state_traj = zeros(12,horizon_steps_num+1); 
 % copy input init state and target velocity
-state_traj(1:6,1) = x_init(1:6);
-
-% state_traj(7:12,1) = vel_tar_local;
+state_traj(1:6,1) = x_init;
 
 for k=1:horizon_steps_num
     x_t = state_traj(1:6,k);

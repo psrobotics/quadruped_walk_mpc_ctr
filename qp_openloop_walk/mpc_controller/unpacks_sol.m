@@ -7,7 +7,7 @@ import casadi.*;
 state_dim = body_p.state_dim;
 f_dim = body_p.f_dim;
 fp_dim = body_p.fp_dim;
-N = ctr_p.N;
+N = ctr_p.mpc_horizon_steps;
 
 x_sol=sol.x(1:state_dim*(N+1));
 x_sol=reshape(full(x_sol),state_dim,(N+1));% COM under world coord

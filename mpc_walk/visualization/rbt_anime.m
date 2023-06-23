@@ -5,9 +5,9 @@ len = size_arr(2);
 
 figure(1);
 
- v = VideoWriter('c_walking_1','MPEG-4');
- v.FrameRate = N/T;
- open(v);
+ % v = VideoWriter('c_walking_1','MPEG-4');
+ % v.FrameRate = N/T;
+ % open(v);
 
 for k = 1:len-1
     x_t = x_arr(:,k);
@@ -111,12 +111,12 @@ for k = 1:len-1
     pause(T/N);
     hold on;
     
-      frame = getframe(gcf);
-      writeVideo(v,frame);
+      % frame = getframe(gcf);
+      % writeVideo(v,frame);
     
 end
 
- close(v);
+ % close(v);
 
 end
 

@@ -4,7 +4,7 @@ function [world, body, ctr, path] = hardware_params()
 path.casadi = 'D:\matlab_lib\casadi-windows-matlabR2016a-v3.5.5';
 
 %% Simulation params
-world.fk = 0.5; % friction
+world.fk = 0.6; % friction
 world.g = 9.81; % gravity constant
 
 world.friction_cone = [1/world.fk, 0 -1;...
@@ -70,25 +70,54 @@ ctr.contact_state_val = [repmat([1;0;0;1], 1, ctr.contact_state_ratio(1)),...
 %                          repmat([0;0;1;1], 1, ctr.contact_state_ratio(1))]; % no foot contact during last 2 phases
 
 ctr.gait_num = 12;
-                 
+
+%% new controller params
+ctr.t_gloal_n = 0; % global clock
+
+ctr.t_gait = 1.0; % time for each gait cycle
+ctr.dt = 0.001; % simulation timestep
+
+% steps in one mpc horizon window
+ctr.mpc_horizon_steps = 200; 
+% mpc simulation timestep
+ctr.dt_mpc = 0.03;
+% time for one mpc horizon
+ctr.t_mpc_horizon = ctr.dt_mpc*ctr.mpc_horizon_steps;
+
+% gait params
+ctr.gait_tar = 1; % 1 trot, 2 pace, 3 bounding, 4 gallop
+% gait height
+ctr.gait_h = 0.12;
+% each gait have 4 phase, 
+% each col is a contact event for 4 legs at a time step
+ctr.contact_trot = [[1;0;0;1],[1;0;0;1],[0;1;1;0],[0;1;1;0]];
+ctr.contact_pace = [[1;0;1;0],[1;0;1;0],[0;1;0;1],[0;1;0;1]];
+ctr.contact_bound = [[1;1;0;0],[1;1;0;0],[0;0;1;1],[0;0;1;1]];
+ctr.contact_gallop = [[1;1;1;1],[1;1;1;1],[0;0;0;0],[0;0;0;0]];
+
+% kp for gait p controller
+ctr.gait_k_p = 0.03;
+ 
+%% mpc gains
 % cost gains
 ctr.weight.QX = [10 10 10, 10 10 10, 10 10 10, 10 10 10 ]'; % state error
-ctr.weight.QN = [10 10 10, 50 50 50, 10 10 10, 10 10 10 ]'; % state error, final
-ctr.weight.Qc = 1*[5 5 5]'; % foot placement error
-ctr.weight.Qf = [0.0001 0.0001 0.001]'; % input error
+ctr.weight.QN = [10 10 10, 10 10 10, 10 10 10, 10 10 10 ]'; % state error, final
+ctr.weight.Qc = 200*[5 5 5]'; % foot placement error
+ctr.weight.Qf = [0.0001 0.0001 0.001]'; % force error, min energy
 
+%% casadi optimal setting
 % casadi optimal settings
 ctr.opt_setting.expand =true;
-ctr.opt_setting.ipopt.max_iter=1500;
+ctr.opt_setting.ipopt.max_iter=800; % 1500
 ctr.opt_setting.ipopt.print_level=0;
-ctr.opt_setting.ipopt.acceptable_tol=1e-4;
-ctr.opt_setting.ipopt.acceptable_obj_change_tol=1e-6;
-ctr.opt_setting.ipopt.tol=1e-4;
+ctr.opt_setting.ipopt.acceptable_tol=1e-4 * 1;
+ctr.opt_setting.ipopt.acceptable_obj_change_tol=1e-6 * 1;
+ctr.opt_setting.ipopt.tol=1e-4 * 1;
 ctr.opt_setting.ipopt.nlp_scaling_method='gradient-based';
-ctr.opt_setting.ipopt.constr_viol_tol=1e-3;
+ctr.opt_setting.ipopt.constr_viol_tol=1e-3 * 1;
 ctr.opt_setting.ipopt.fixed_variable_treatment='relax_bounds';
 
-%% Robot params
+%% Robot hardware params
 
 body.state_dim = 12; % number of dim of state, rpy xyz dot_rpy dot_xyz
 body.f_dim = 12; % number of dim of leg force, 3*4

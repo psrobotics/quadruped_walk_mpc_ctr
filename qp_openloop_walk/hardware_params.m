@@ -78,7 +78,7 @@ ctr.t_gait = 1.0; % time for each gait cycle
 ctr.dt = 0.001; % simulation timestep
 
 % steps in one mpc horizon window
-ctr.mpc_horizon_steps = 200; 
+ctr.mpc_horizon_steps = 400; 
 % mpc simulation timestep
 ctr.dt_mpc = 0.03;
 % time for one mpc horizon

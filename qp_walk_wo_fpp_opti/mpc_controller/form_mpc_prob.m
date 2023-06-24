@@ -60,7 +60,11 @@ for k = 1:N
     x_ref_t = mpc_v.x_ref_arr(:,k); % current reference state
     f_ref_t = mpc_v.f_ref_arr(:,k); % current reference force
     fp_ref_t = mpc_v.fp_ref_arr(:,k); % current reference foot placement point in global coord
+    rot_mat_t = rot_zyx(x_t(1:3));
     fp_local_ref_t = fp_ref_t - repmat(x_t(4:6),4,1); % ref fpp under local coord ? rot mat
+    for kk = 1:4
+        fp_local_ref_t((kk-1)*3+1:(kk-1)*3+3) = rot_mat_t'*fp_local_ref_t((kk-1)*3+1:(kk-1)*3+3);
+    end
     
     contact_mat_t = mpc_v.contact_mat_arr(:,k); % current foot contact point ref
     % mpc dt

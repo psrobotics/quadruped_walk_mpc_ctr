@@ -1,4 +1,4 @@
-# quadeuped_walk_mpc_ctr
+# quadruped_walk_mpc_ctr
 
 ## Casadi
 [Casadi toolbox](https://web.casadi.org/)

@@ -1,1 +1,1 @@
-# quadeuped_walk_mpc_ctr
+# quadruped_walk_mpc_ctr
